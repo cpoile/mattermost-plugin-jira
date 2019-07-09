@@ -181,219 +181,107 @@ func TestWebhookHTTP(t *testing.T) {
 			ExpectedHeadline: "Test User updated status from \"In Progress\" to \"To Do\" on story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
 			CurrentInstance:  true,
 		},
-		"issue created - no instance": {
-			Request:                 testWebhookRequest("webhook-issue-created.json"),
-			ExpectedSlackAttachment: true,
-			ExpectedHeadline:        "Test User created story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			ExpectedText:            "story [Unit test summary](https://some-instance-test.atlassian.net/browse/TES-41)\n\nUnit test description, not that long\n",
-			ExpectedFields: []*model.SlackAttachmentField{
-				&model.SlackAttachmentField{
-					Title: "Priority",
-					Value: "High",
-					Short: true,
-				},
-			},
-			CurrentInstance: false,
-		},
-		"issue edited - no instance": {
-			Request:                 testWebhookRequest("webhook-issue-updated-edited.json"),
-			ExpectedSlackAttachment: true,
-			ExpectedHeadline:        "Test User edited the description of story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			ExpectedText:            "story [Unit test summary 1](https://some-instance-test.atlassian.net/browse/TES-41)\n\nUnit test description, not that long, a little longer now\n",
-			CurrentInstance:         false,
-		},
-		"issue renamed - no instance": {
-			Request:                 testWebhookRequest("webhook-issue-updated-renamed.json"),
-			ExpectedSlackAttachment: true,
-			ExpectedHeadline:        "Test User renamed story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			ExpectedText:            "story [Unit test summary 1](https://some-instance-test.atlassian.net/browse/TES-41)",
-			CurrentInstance:         false,
-		},
-		"comment created - no instance": {
-			Request:                 testWebhookRequest("webhook-comment-created.json"),
-			ExpectedSlackAttachment: true,
-			ExpectedHeadline:        "Test User commented on story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			ExpectedText:            "Added a comment",
-			CurrentInstance:         false,
-		},
-		"comment created on server - no instance": {
-			Request:                 testWebhookRequest("webhook-comment-created-server.json"),
-			ExpectedSlackAttachment: true,
-			ExpectedHeadline:        "Test User commented on improvement [PRJA-42](http://test-server.azure.com:8080/browse/PRJA-42)",
-			ExpectedText:            "This is a test comment. We should act on it right away.",
-			CurrentInstance:         false,
-		},
-		"comment updated - no instance": {
-			Request:                 testWebhookRequest("webhook-comment-updated.json"),
-			ExpectedSlackAttachment: true,
-			ExpectedHeadline:        "Test User edited comment in story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			ExpectedText:            "Added a comment, then edited it",
-			CurrentInstance:         false,
-		},
-		"comment deleted - no instance": {
-			Request:          testWebhookRequest("webhook-comment-deleted.json"),
-			ExpectedHeadline: "Test User deleted comment in story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			CurrentInstance:  false,
-		},
-		"issue assigned nobody - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-assigned-nobody.json"),
-			ExpectedHeadline: "Test User assigned _nobody_ to story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			CurrentInstance:  false,
-		},
-		"issue assigned - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-assigned.json"),
-			ExpectedHeadline: "Test User assigned Test User to story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			CurrentInstance:  false,
-		},
-		"issue assigned on server - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-assigned-on-server.json"),
-			ExpectedHeadline: "Test User assigned Test User to improvement [PRJA-37](http://some-instance-test.centralus.cloudapp.azure.com:8080/browse/PRJA-37)",
-			CurrentInstance:  false,
-		},
-		"issue attachments - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-attachments.json"),
-			ExpectedHeadline: "Test User attached [test.gif] to, removed attachments [test.json] from story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			CurrentInstance:  false,
-		},
-		"issue labels - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-labels.json"),
-			ExpectedHeadline: "Test User added labels [sad] to, removed labels [bad] from story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			CurrentInstance:  false,
-		},
-		"issue lowered priority - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-lowered-priority.json"),
-			ExpectedHeadline: `Test User updated priority from "Low" to "High" on story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)`,
-			CurrentInstance:  false,
-		},
-		"issue raised priority - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-raised-priority.json"),
-			ExpectedHeadline: `Test User updated priority from "High" to "Low" on story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)`,
-			CurrentInstance:  false,
-		},
-		"issue rank - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-rank.json"),
-			ExpectedHeadline: "Test User ranked higher story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			CurrentInstance:  false,
-		},
-		"issue reopened - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-reopened.json"),
-			ExpectedHeadline: "Test User reopened story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			CurrentInstance:  false,
-		},
-		"issue resolved - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-resolved.json"),
-			ExpectedHeadline: "Test User resolved story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			CurrentInstance:  false,
-		},
-		"issue sprint - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-sprint.json"),
-			ExpectedHeadline: "Test User moved story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41) to Sprint 2",
-			CurrentInstance:  false,
-		},
-		"issue started working - no instance": {
-			Request:          testWebhookRequest("webhook-issue-updated-started-working.json"),
-			ExpectedHeadline: "Test User updated status from \"In Progress\" to \"To Do\" on story [TES-41](https://some-instance-test.atlassian.net/browse/TES-41)",
-			CurrentInstance:  false,
-		},
 	} {
-		t.Run(name, func(t *testing.T) {
-			api := &plugintest.API{}
+		for _, currentInstance := range []bool{true, false} {
+			t.Run(name, func(t *testing.T) {
+				api := &plugintest.API{}
 
-			api.On("LogDebug",
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string")).Return(nil)
-			api.On("LogError",
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string")).Return(nil)
-			api.On("LogError",
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string"),
-				mock.AnythingOfTypeArgument("string")).Return(nil)
+				api.On("LogDebug",
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string")).Return(nil)
+				api.On("LogError",
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string")).Return(nil)
+				api.On("LogError",
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string"),
+					mock.AnythingOfTypeArgument("string")).Return(nil)
 
-			api.On("GetUserByUsername", "theuser").Return(&model.User{
-				Id: "theuserid",
-			}, (*model.AppError)(nil))
-			api.On("GetChannelByNameForTeamName", "theteam", "thechannel",
-				false).Run(func(args mock.Arguments) {
-				api.On("CreatePost", mock.AnythingOfType("*model.Post")).Return(&model.Post{}, (*model.AppError)(nil))
-			}).Return(&model.Channel{
-				Id:     "thechannelid",
-				TeamId: "theteamid",
-			}, (*model.AppError)(nil))
+				api.On("GetUserByUsername", "theuser").Return(&model.User{
+					Id: "theuserid",
+				}, (*model.AppError)(nil))
+				api.On("GetChannelByNameForTeamName", "theteam", "thechannel",
+					false).Run(func(args mock.Arguments) {
+					api.On("CreatePost", mock.AnythingOfType("*model.Post")).Return(&model.Post{}, (*model.AppError)(nil))
+				}).Return(&model.Channel{
+					Id:     "thechannelid",
+					TeamId: "theteamid",
+				}, (*model.AppError)(nil))
 
-			p := Plugin{}
-			p.updateConfig(func(conf *config) {
-				conf.Secret = validConfiguration.Secret
+				p := Plugin{}
+				p.updateConfig(func(conf *config) {
+					conf.Secret = validConfiguration.Secret
+				})
+				p.SetAPI(api)
+
+				if currentInstance {
+					p.currentInstanceStore = mockCurrentInstanceStore{&p}
+				} else {
+					p.currentInstanceStore = mockCurrentInstanceStoreNoInstance{&p}
+				}
+
+				p.userStore = mockUserStore{}
+
+				w := httptest.NewRecorder()
+				recorder := &testWebhookWrapper{}
+				prev := webhookWrapperFunc
+				defer func() { webhookWrapperFunc = prev }()
+				webhookWrapperFunc = func(wh Webhook) Webhook {
+					recorder.Webhook = wh
+					return recorder
+				}
+				p.ServeHTTP(&plugin.Context{}, w, tc.Request)
+				// assert.Equal(t, 0, w.Result().StatusCode)
+				require.NotNil(t, recorder.postedToChannel)
+				post := recorder.postedToChannel
+
+				if !tc.ExpectedSlackAttachment {
+					assert.Equal(t, tc.ExpectedHeadline, post.Message)
+					return
+				}
+
+				require.NotNil(t, post.Props)
+				require.NotNil(t, post.Props["attachments"])
+				attachments := post.Props["attachments"].([]*model.SlackAttachment)
+				require.Equal(t, 1, len(attachments))
+
+				sa := attachments[0]
+				assert.Equal(t, tc.ExpectedHeadline, sa.Pretext)
+				assert.Equal(t, tc.ExpectedText, sa.Text)
+				require.Equal(t, len(tc.ExpectedFields), len(sa.Fields))
+				for i := range tc.ExpectedFields {
+					assert.Equal(t, tc.ExpectedFields[i].Title, sa.Fields[i].Title)
+					assert.Equal(t, tc.ExpectedFields[i].Value, sa.Fields[i].Value)
+					assert.Equal(t, tc.ExpectedFields[i].Short, sa.Fields[i].Short)
+				}
 			})
-			p.SetAPI(api)
-
-			if tc.CurrentInstance {
-				p.currentInstanceStore = mockCurrentInstanceStore{&p}
-			} else {
-				p.currentInstanceStore = mockCurrentInstanceStoreNoInstance{&p}
-			}
-
-			p.userStore = mockUserStore{}
-
-			w := httptest.NewRecorder()
-			recorder := &testWebhookWrapper{}
-			prev := webhookWrapperFunc
-			defer func() { webhookWrapperFunc = prev }()
-			webhookWrapperFunc = func(wh Webhook) Webhook {
-				recorder.Webhook = wh
-				return recorder
-			}
-			p.ServeHTTP(&plugin.Context{}, w, tc.Request)
-			// assert.Equal(t, 0, w.Result().StatusCode)
-			require.NotNil(t, recorder.postedToChannel)
-			post := recorder.postedToChannel
-
-			if !tc.ExpectedSlackAttachment {
-				assert.Equal(t, tc.ExpectedHeadline, post.Message)
-				return
-			}
-
-			require.NotNil(t, post.Props)
-			require.NotNil(t, post.Props["attachments"])
-			attachments := post.Props["attachments"].([]*model.SlackAttachment)
-			require.Equal(t, 1, len(attachments))
-
-			sa := attachments[0]
-			assert.Equal(t, tc.ExpectedHeadline, sa.Pretext)
-			assert.Equal(t, tc.ExpectedText, sa.Text)
-			require.Equal(t, len(tc.ExpectedFields), len(sa.Fields))
-			for i := range tc.ExpectedFields {
-				assert.Equal(t, tc.ExpectedFields[i].Title, sa.Fields[i].Title)
-				assert.Equal(t, tc.ExpectedFields[i].Value, sa.Fields[i].Value)
-				assert.Equal(t, tc.ExpectedFields[i].Short, sa.Fields[i].Short)
-			}
-		})
+		}
 	}
 }
